@@ -10,7 +10,7 @@ Clone the repo and create the images and containers with the following:
 docker-compose up -d
 ```
 
-If you want to install additional applications or python packages change the `./Dockerfile` file.
+If you want to install additional applications or python packages change the [`./Dockerfile`](Dockerfile) file.
 
 ### Accessing Confluent Control Center
 
@@ -28,31 +28,31 @@ Then, click on the last Jupyter URL.
 
 ## Retrain the model
 
-The model trained by us is stored in the `./models` folder. If you want to retrain the model you need to run the `./01 Sentiment Analysis Model.ipynb` file in a Jupyter Notebook using the `Jupyter` container.
+The model trained by us is stored in the [`./models`](models) folder. If you want to retrain the model you need to run the [`./01 Sentiment Analysis Model.ipynb`](01%20Sentiment%20Analysis%20Model.ipynb) file in a Jupyter Notebook using the `Jupyter` container.
 
 The script will download the Sentiment 140 dataset and start sending it as messages to a Kafka topic. Then, it will stream that topic and create a parquet file, which will be used to train the model.
 
 ## Connect to the Twitter API
 
-Run the cells on the `./02 Connection Streams Tables.ipynb`, which will creates the Twitter API connection and additional streams, tables and topics on Confluent.
+Run the cells on the [`./02 Connection Streams Tables.ipynb`](02%20Connection%20Streams%20Tables.ipynb), which will creates the Twitter API connection and additional streams, tables and topics on Confluent.
 
-To modify the Twitter API connection, change the parameters in the `configs/twitterConnector.json` file before running the `./02 Connection Streams Tables.ipynb` script.
+To modify the Twitter API connection, change the parameters in the [`configs/twitterConnector.json`](configs/twitterConnector.json) file before running the [`./02 Connection Streams Tables.ipynb`](02%20Connection%20Streams%20Tables.ipynb) script.
 
 ## Tweets by location
 
-Run the cells on the `./03 Country Window Stream.ipynb`, which will creates a table with the number of tweets per country in a two minute window.
+Run the cells on the [`./03 Country Window Stream.ipynb`](03%20Country%20Window%20Stream.ipynb), which will creates a table with the number of tweets per country in a two minute window.
 
 You need to do the `Connect to the Twitter API` step first.
 
 ## Tweets wordcloud
 
-Run the cells on the `./04 Wordcloud Stream.ipynb`, which will creates a wordcloud with the most used hashtags in the last hour.
+Run the cells on the [`./04 Wordcloud Stream.ipynb`](04%20Wordcloud%20Stream.ipynb), which will creates a wordcloud with the most used hashtags in the last hour.
 
 You need to do the `Connect to the Twitter API` step first.
 
 ## Inference data stream
 
-Run the cells on the `./05 Sentiment Analysis Stream.ipynb`, which will creates a new topic with the sentiment of each english tweet.
+Run the cells on the [`./05 Sentiment Analysis Stream.ipynb`](05%20Sentiment%20Analysis%20Stream.ipynb), which will creates a new topic with the sentiment of each english tweet.
 
 You need to do the `Connect to the Twitter API` step first.
 
