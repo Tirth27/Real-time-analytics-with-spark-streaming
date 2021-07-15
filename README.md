@@ -168,3 +168,58 @@ See script **04 Wordcloud Stream** for details.
 Using "loctweets" as the topic, this window stream allows getting a count of Covid-19 related tweets by location (country level) over a period of 2 minutes. There is a watermark to drop old data. It has a duration of 1 minute for late data to be allowed to come in up to that time.
 
 Looking at the example below, we can see that India currently has the highest count of tweets about Covid-19, representing the current situation and outbreaks the country is experiencing.
+
+![Example of the output for the window stream by country.](./readme_images/f8.png)
+
+*Table 5: Example of the output for the window stream by country.*
+
+See details in script **03 Country Window Stream**.
+
+## Consumer and Sentiment Analysis
+Using the trained model descibed above, sentiment analysis of tweets was performed.
+
+To do that, first, tweets were received from "engstweets" topic. A ReadStream function was used with the schema described in Table 4 and with "startingOffsets" "earliest" to start reading at the beginning of the stream.
+
+Then, the same pre-processing used in the modelling part was performed (See Table 3). After that, the prediction (negative or positive sentiment) of each tweet was generated. Then, the chosen variables to be uploaded to Kafka – user_name, text and sentiment- were changed to a JSON format because Kafka only read key-value format when we write a stream. These variables were selected if a future analysis of the predictions is wanted to be done. Also, a checkpoint in a local folder was created because, in addition to being mandatory when a Kafka stream is written, it helps to store offset of changelog topic (If the application restarted the consumer will try to continue consume from this offset stored in checkpoint file.).
+
+Finally, a query to check if the topic and the predictions were correctly uploaded in Kafka was done. As we can see in the example below, the first tweet shows a positive sentiment and the second one a negative:
+
+```
+{
+    "USER_NAME":"cleopatra 𖤐",
+    "tweet_text":"need vaccine v2 so i can go out",
+    "sentiment":"positive"
+}
+{
+    "USER_NAME":"規制明け絶対民主法治国家維持",
+    "tweet_text":"@jhengstler please don't mention the covid-19 daily per million cases of higher-vaccinatation-rate uk is beyond the those of much-lower-vaccination-rate india. https://t.co/iiEdDmCl2j",
+    "sentiment":"negative"
+}
+```
+
+See script **05 Sentiment Analysis Stream** for details.
+
+# Issues and constraints
+This project relies on various service providers and querying language that have their limitations. The service providers (confluent) offer paid versions of the tool as well, and our work is currently set up using the free version.
+
+A few examples of constraints are listed below:
+- KSQL is known to be very easy to use. Its simplicity makes it a convenient way to stream data in real-time. On the other hand, this also means it is more limited when needing to achieve more complex filtering.
+- When streaming real-time data, any data generated during downtime is lost and requires the connection to be stable and reliable, which might require upgrading to a paid service.
+
+# Conclusion
+To conclude, the project has multiple functions and purposes for which various streams and tables have been created. These are currently limited to the topic of Covid-19 and vaccine and information such as the location of tweets, sentiments and access to a visualisation (word cloud) with the most popular hashtags on this topic.
+
+Combined, these sources of information can give a quick overview of the global situation around Covid-19 by looking at the location and overall sentiment of the tweets as well as the trending hashtags.
+
+The current version of the Twitter API in this project is free to use, which is convenient but also has restrictions in terms of the number of tweets and information available. There are options to purchase a premium version to expand both on the number of tweets and level of granularity of the data available should the requirements and scope of the project evolve in the future.
+
+There are also opportunities to improve the performance of the model, which currently has an AUC of 0.57. To evaluate classifiers, the AUC (Area under the Curve) can be used as a measure of its performance and would need to be between 0.50 and 1. 1 being a perfect classification of tweets between negative and positive sentiment. Currently, it is slightly higher than a random estimation.
+
+There are opportunities to improve the model further by improving the training data and classifying more tweets as positive or negative related to Covid-19. Either manually or by using an additional external dataset as well.
+
+Additional sources can be added to the project, either via CSV or other APIs, to add further value to the project based on the analysis requirements.
+
+# Data Dictionary
+
+## [Tweets](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/tweet)
+## [Users Data Dictionary](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user)
