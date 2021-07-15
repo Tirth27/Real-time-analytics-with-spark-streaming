@@ -1,0 +1,8 @@
+# Folders of vscode and jupyter
+.vscode/
+.ipynb_checkpoints/
+
+# Folders created by the scripts
+checkpoint/
+spark-warehouse/
+data/

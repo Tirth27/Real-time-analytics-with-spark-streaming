@@ -10,12 +10,12 @@ The data is composed of tweets, pulled via the Twitter API, with a focus on Covi
 Documentation on how to set up the API connection and environment and the difficulties encountered during this process is provided along with their solutions.
 
 # Data description
-This project relies on two datasets: the raw tweets pulled via the Twitter API and the Sentiment 140 dataset in a comma-separated values format.
+This project relies on two datasets: the raw tweets pulled via the Twitter API and the [Sentiment 140 dataset](https://www.kaggle.com/kazanova/sentiment140) in a comma-separated values format.
 
 ## Twitter API
 The information received via the API is about the tweet and contains details about the user who posted the tweet too.
 
-A comprehensive list of variables and their data types and descriptions are available in Appendix 1: Raw Twitter Data Dictionary.
+A comprehensive list of variables and their data types and descriptions are available in `Data Dictionary` at the end.
 
 ## [Sentiment 140 dataset](https://www.kaggle.com/kazanova/sentiment140)
 The Sentiment 140 dataset has been created using 1.6M tweets that have been annotated as either negative or positive. The attributes of the datasets are exposed in Table 1. Only **"Target"** and **"text"** were used to train the model.
@@ -44,39 +44,39 @@ Table 2 describes some of the folders and files in the structure.
 
 | Path                               | Description                                                                                                                                                                          |
 |------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 01 Sentiment Analysis Model.ipynb  | This notebook contains the script that trains the sentiment analysis model.                                                                                                          |
-| 02 Connection Streams Tables.ipynb | This notebook contains the script that runs the KSQL statements located in the **ksql** folder.                                                                                          |
-| 03 Country Window Stream.ipynb     | This notebook contains the script that creates a table with the number of tweets per country.                                                                                        |
-| 04 Wordcloud Stream.ipynb          | This notebook contains the script that generates the Wordcloud stream from the Twitter data.                                                                                         |
-| 05 Sentiment Analysis Stream.ipynb | This notebook contains the script that categorises the tweets according to their sentiment.                                                                                          |
-| Configs folder                     | Folder where the configuration needed to connect with the Twitter API is stored.                                                                                                     |
-| docker-compose.yml and Dockerfile  | Docker instructions needed to create the containers for data streaming.                                                                                                              |
-| Ksql folder                        | Folder where the ksql statement are stored. Those statements are the ones that create streams and tables on Confluent and are used in the **02 Connection Streams Tables.ipynb** script. |
-| Models folder                      | Folder where the model trained with the **01 Sentiment Analysis Model.ipynb** file is stored. It can also be found in a zip file in case the folder get corrupted.                       |
-| Producer folder                    | Folder where the data producer used in the **01 Sentiment Analysis Model.ipynb** script is stored. This is the file that produces the labelled tweets data.                              |
-| INSTRUCTION_README.md              | Summary of the instructions to run the repository code.                                                                                                                              |
+| [01 Sentiment Analysis Model.ipynb](01%20Sentiment%20Analysis%20Model.ipynb)  | This notebook contains the script that trains the sentiment analysis model.                                                                                                          |
+| [02 Connection Streams Tables.ipynb](02%20Connection%20Streams%20Tables.ipynb) | This notebook contains the script that runs the KSQL statements located in the **ksql** folder.                                                                                          |
+| [03 Country Window Stream.ipynb](03%20Country%20Window%20Stream.ipynb)     | This notebook contains the script that creates a table with the number of tweets per country.                                                                                        |
+| [04 Wordcloud Stream.ipynb](04%20Wordcloud%20Stream.ipynb)          | This notebook contains the script that generates the Wordcloud stream from the Twitter data.                                                                                         |
+| [05 Sentiment Analysis Stream.ipynb](05%20Sentiment%20Analysis%20Stream.ipynb) | This notebook contains the script that categorises the tweets according to their sentiment.                                                                                          |
+| [Configs folder](configs/twitterConnector.json)                     | Folder where the configuration needed to connect with the Twitter API is stored.                                                                                                     |
+| [docker-compose.yml](docker-compose.yml) and [Dockerfile](Dockerfile)  | Docker instructions needed to create the containers for data streaming.                                                                                                              |
+| [Ksql folder](ksql)                        | Folder where the ksql statement are stored. Those statements are the ones that create streams and tables on Confluent and are used in the **[02 Connection Streams Tables.ipynb](02%20Connection%20Streams%20Tables.ipynb)** script. |
+| [Models folde](models)                      | Folder where the model trained with the **[01 Sentiment Analysis Model.ipynb](01%20Sentiment%20Analysis%20Model.ipynb)** file is stored. It can also be found in a zip file in case the folder get corrupted.                       |
+| [Producer folder](producers)                    | Folder where the data producer used in the **[01 Sentiment Analysis Model.ipynb](01%20Sentiment%20Analysis%20Model.ipynb)** script is stored. This is the file that produces the labelled tweets data.                              |
+| [INSTRUCTION_README.md](INSTRUCTION_README.md)              | Summary of the instructions to run the repository code.                                                                                                                              |
 
-## Installation
-A Docker installation is needed to continue with this step. We used the following command in a terminal opened in the folder where the docker-compose.yaml file was located:
+## [Installation](INSTRUCTION_README.md)
+A Docker installation is needed to continue with this step. We used the following command in a terminal opened in the folder where the [docker-compose.yml](docker-compose.yml) file was located:
 
 `sudo docker-compose up -d`
 
 # Labelled tweets streaming
-We used labelled tweets to train a machine learning model capable of identifying a negative or positive sentiment in the text. The process starts with a producer that sends each of the rows in the Sentiment 140 dataset as a message to a Kafka topic. Those messages are then processed to create the model features, which are used for training. We used Python, Kafka (via Confluent) and some components of Spark during the whole process, which is summarised in Figure 2. Please refer to the **01 Sentiment Analysis Model.ipynb** file to see the script.
+We used labelled tweets to train a machine learning model capable of identifying a negative or positive sentiment in the text. The process starts with a producer that sends each of the rows in the Sentiment 140 dataset as a message to a Kafka topic. Those messages are then processed to create the model features, which are used for training. We used Python, Kafka (via Confluent) and some components of Spark during the whole process, which is summarised in Figure 2. Please refer to the **[01 Sentiment Analysis Model.ipynb](01%20Sentiment%20Analysis%20Model.ipynb)** file to see the script.
 
 ![General diagram of the data stream for the training process.](./readme_images/f2.png)
 
 *Figure 2: General diagram of the data stream for the training process.*
 
 ## Producer and Topic
-In order to send the messages with the labelled tweets data, we created a Python script that acts as the producer, which is executed in the first part of the **01 Sentiment Analysis Model.ipynb** file. This script downloads the Sentiment 140 dataset from Google Drive and then reads the comma-separated value file with Pandas. Finally, the script sends each observation as a message to the **"labelledtweets"** topic on Confluent. This process can take up to 3 hours. Figure 3 shows a diagram with the activities of the producer.
+In order to send the messages with the labelled tweets data, we created a Python script that acts as the producer, which is executed in the first part of the **[01 Sentiment Analysis Model.ipynb](01%20Sentiment%20Analysis%20Model.ipynb)** file. This script downloads the Sentiment 140 dataset from Google Drive and then reads the comma-separated value file with Pandas. Finally, the script sends each observation as a message to the **"labelledtweets"** topic on Confluent. This process can take up to 3 hours. Figure 3 shows a diagram with the activities of the producer.
 
 ![Diagram of the producer that sends the labelled tweets to Kafka.](./readme_images/f3.png)
 
 *Figure 3: Diagram of the producer that sends the labelled tweets to Kafka.*
 
 ## Consumer and Data Sink
-The next step in the streaming process uses Spark Streaming to read the topic and send it to an output sink. The messages in the topic are read from the earliest and then transformed to a Spark DataFrame format with two columns ("Target" and "Text"). Finally, each of the stream messages is appended to a parquet file. Figure 4 shows the diagram with the process to save the messages as a parquet file.
+The next step in the streaming process uses Spark Streaming to read the topic and send it to an output sink. The messages in the topic are read from the earliest and then transformed to a Spark DataFrame format with two columns **("Target" and "Text")**. Finally, each of the stream messages is appended to a parquet file. Figure 4 shows the diagram with the process to save the messages as a parquet file.
 
 ![Diagram of the consumer of the labelled data and the data sink.](./readme_images/f4.png)
 
@@ -113,12 +113,12 @@ Figure 6 shows the general structure of the Project process. The sections below 
 ## Producer: API connector
 [We used the Kafka Connect Source API to get access to the Twitter data](https://www.confluent.io/hub/jcustenborder/kafka-connect-twitter/). This connector produces messages that contain the information of the tweets detailed in the Data description section and can be configured. For our use case, we decided to filter those tweets that contain at least one of the following words: "Covid", "Covid-19", and "vaccine". The messages that the connector produce are stored in the "Covidtweets" topic.
 
-Additional details of the configuration, like the API keys, can be found in the **twitterConnector.json** file inside the **configs** folder.
+Additional details of the configuration, like the API keys, can be found in the **[twitterConnector.json](configs/twitterConnector.json)** file inside the **[configs](configs)** folder.
 
 ## Data Streams and Tables
-KSQL was used to create streams and tables of different themes that we wanted to analyse. As we can see in Figure 6, the first stream was called "rawstream" and it was generated with the "covidtweets" topic created by the producer. As its name said, this stream has all the twitter variables mentioned in the data description (Twitter API) above and described in Appendix 1: Raw Twitter Data Dictionary. From this, three streams and one table were created.
+KSQL was used to create streams and tables of different themes that we wanted to analyse. As we can see in Figure 6, the first stream was called "rawstream" and it was generated with the "covidtweets" topic created by the producer. As its name said, this stream has all the twitter variables mentioned in the data description (Twitter API) above and described in `Data Dictionary`. From this, three streams and one table were created.
 
-The first one was the "engstream" stream. It contains 19 variables from "rawstream", and the tweets are filtered to include only English accounts (The variables are: CreatedAt, user_Id, user_name, ScreenName, user_location, follow_count, friend_count, user_creat_at, user_fav_count, user_verified, user_lang, text, Lang, geo_lat, geo_long, place_name, place_country, hashtag, and user_mention_name.). The result is saved in the topic "engtweets" in a JSON format. From this, a visualisation of the most common hashtags and a sentiment analysis are constructed.
+The first one was the "engstream" stream. It contains 19 variables from "rawstream", and the tweets are filtered to include only English accounts *(The variables are: CreatedAt, user_Id, user_name, ScreenName, user_location, follow_count, friend_count, user_creat_at, user_fav_count, user_verified, user_lang, text, Lang, geo_lat, geo_long, place_name, place_country, hashtag, and user_mention_name.)*. The result is saved in the topic "engtweets" in a JSON format. From this, a visualisation of the most common hashtags and a sentiment analysis are constructed.
 
 Second, the "hashstream" stream and "hashtweets" topic were performed to analyse the hashtags of each tweet. In this task, only the tweet' Id and the text of the "Hashtags" are kept using the explode function in SQL. With this new topic, the hash_count table is created to count the number of different hashtags in a tumbling window of 10 minutes.
 
@@ -128,7 +128,7 @@ Then, tweet locations were investigated. The "locstream" stream was created with
 
 Finally, "count_user_verifed" table was created from "rawstream" stream to count the number of tweets of verified accounts in a tumbling window of 5 minutes. The variables resulted in this table were the "screenname" of the tweet owner and the count created.
 
-Details in script **02 Connection Streams Tables.ipynb**.
+Details in script **[02 Connection Streams Tables.ipynb](02%20Connection%20Streams%20Tables.ipynb)**.
 
 ## Word Cloud of tweets
 A real-time word cloud for trending hashtags on Twitter is refreshed every 5 minutes. First, the data is read from the "EngTweets" topic. PySpark read data in a binary key-value format, with each row, has a timestamp attached to it.
@@ -162,7 +162,7 @@ As expected, because of the initial filters "Covid", "Covid-19" and "vaccine" me
 
 *Figure 7: Word Cloud*
 
-See script **04 Wordcloud Stream** for details.
+See script **[04 Wordcloud Stream](04%20Wordcloud%20Stream.ipynb)** for details.
 
 ## Count of Tweets by Location
 Using "loctweets" as the topic, this window stream allows getting a count of Covid-19 related tweets by location (country level) over a period of 2 minutes. There is a watermark to drop old data. It has a duration of 1 minute for late data to be allowed to come in up to that time.
@@ -173,7 +173,7 @@ Looking at the example below, we can see that India currently has the highest co
 
 *Table 5: Example of the output for the window stream by country.*
 
-See details in script **03 Country Window Stream**.
+See details in script **[03 Country Window Stream](03%20Country%20Window%20Stream.ipynb)**.
 
 ## Consumer and Sentiment Analysis
 Using the trained model descibed above, sentiment analysis of tweets was performed.
@@ -197,7 +197,7 @@ Finally, a query to check if the topic and the predictions were correctly upload
 }
 ```
 
-See script **05 Sentiment Analysis Stream** for details.
+See script **[05 Sentiment Analysis Stream](05%20Sentiment%20Analysis%20Stream.ipynb)** for details.
 
 # Issues and constraints
 This project relies on various service providers and querying language that have their limitations. The service providers (confluent) offer paid versions of the tool as well, and our work is currently set up using the free version.

@@ -1,0 +1,4 @@
+{
+    "ksql": "CREATE TABLE hashcount AS SELECT HASHTAG, COUNT(*) AS CT FROM hashstream WINDOW TUMBLING (SIZE 10 minute) GROUP BY HASHTAG;",
+    "streamsProperties": {}
+}

@@ -1,0 +1,4 @@
+{
+    "ksql": "CREATE STREAM hashstream AS SELECT ID, LCASE(EXPLODE(HASHTAGENTITIES)-> TEXT) AS HASHTAG FROM rawtweets EMIT CHANGES;",
+    "streamsProperties": {"auto.offset.reset":"earliest"}
+}

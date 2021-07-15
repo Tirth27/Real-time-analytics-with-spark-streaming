@@ -1,0 +1,4 @@
+{
+    "ksql": "CREATE STREAM rawtweets WITH (KAFKA_TOPIC='covidtweets', VALUE_FORMAT='Avro');",
+    "streamsProperties": {}
+}

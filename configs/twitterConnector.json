@@ -1,0 +1,19 @@
+{
+  "name": "TwitterConnector",
+  "config": {
+    "connector.class": "com.github.jcustenborder.kafka.connect.twitter.TwitterSourceConnector",
+    "tasks.max": "1",
+    "topic.creation.groups": "covidtweets",
+    "twitter.debug": "true",
+    "twitter.oauth.consumerKey": "YOUR_CONSUMER_KEY",
+    "twitter.oauth.consumerSecret": "YOUR_CONSUMER_SECRET",
+    "twitter.oauth.accessToken": "YOUR_CONSUMER_ACCESS_TOKEN",
+    "twitter.oauth.accessTokenSecret": "YOUR_CONSUMER_ACCESS_TOKEN_SECRET",
+    "filter.keywords": "covid, covid-19, vaccine",
+    "kafka.status.topic": "covidtweets",
+    "process.deletes": "true",
+    "quickstart": "covidtweets",
+    "topic.creation.default.partitions": "1",
+    "topic.creation.default.replication.factor": "1"
+  }
+}

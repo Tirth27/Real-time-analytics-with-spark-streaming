@@ -1,0 +1,4 @@
+{
+    "ksql": "CREATE TABLE count_user_verified AS SELECT USER->SCREENNAME as user_screenname, COUNT(*) AS count_tweets FROM rawtweets WINDOW TUMBLING (SIZE 5 minute) WHERE USER->VERIFIED GROUP BY USER->SCREENNAME;",
+    "streamsProperties": {}
+}

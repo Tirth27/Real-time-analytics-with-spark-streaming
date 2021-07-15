@@ -1,0 +1,4 @@
+{
+    "ksql": "CREATE STREAM engstream WITH (kafka_topic='engtweets', value_format='JSON') AS SELECT CreatedAt, Id, user->Id as user_Id,  user->Name as user_name, user->ScreenName as ScreenName, user->Location as user_location, User->FollowersCount as follow_count, User->FriendsCount as friend_count, User->CreatedAt as user_creat_at, User->FavouritesCount as user_fav_count, User->Verified as user_verified, User->Lang as user_lang, text, Lang, GeoLocation->Latitude as geo_lat, GeoLocation->Longitude as geo_long, Place->Name as place_name, Place->Country as place_country, HashtagEntities as hashtag, UserMentionEntities as user_mention_name FROM rawtweets WHERE lang ='en' and Retweet=false EMIT CHANGES;",
+    "streamsProperties": {"auto.offset.reset":"earliest"}
+}
